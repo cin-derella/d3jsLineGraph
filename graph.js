@@ -4,7 +4,7 @@ const graphHeight = 400-margin.top-margin.bottom;
 
 const svg =d3.select('.canvas')
     .append('svg')
-    .attr('width',graphWidh+margin.left+margin.right)
+    .attr('width',graphWidth+margin.left+margin.right)
     .attr('height',graphHeight+margin.top+margin.bottom);
 
 const graph = svg.append('g')
@@ -27,7 +27,19 @@ const yAxisGroup = graph.append('g')
 
 
 const update = (data)=>{
-    console.log(data);
+    //set scale domains
+    x.domain(d3.extent(data,d=>new Date(d.date)));
+    y.domain([0,d3.max(data,d=>d.distance)]);
+
+    //create axes
+    const xAxis = d3.axisBottom(x)
+        .ticks(4);
+    const yAxis = d3.axisLeft(y)
+        .ticks(4);
+    
+    //call axes 
+    xAxisGroup.call(xAxis);
+    yAxisGroup.call(yAxis);
 }
 
 //data and firestore
