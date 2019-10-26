@@ -27,9 +27,13 @@ const yAxisGroup = graph.append('g')
 
 
 const update = (data)=>{
+    data = data.filter(item =>item.activity ==activity);
+    
     //set scale domains
     x.domain(d3.extent(data,d=>new Date(d.date)));
     y.domain([0,d3.max(data,d=>d.distance)]);
+
+
 
     //create circles for objects
     const circles = graph.selectAll('circle')
@@ -54,7 +58,7 @@ const update = (data)=>{
 
     //create axes
     const xAxis = d3.axisBottom(x)
-        .ticks(5)
+        .ticks(4)
         .tickFormat(d3.timeFormat('%b %d'));
     const yAxis = d3.axisLeft(y)
         .ticks(4)
