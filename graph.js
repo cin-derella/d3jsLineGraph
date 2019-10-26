@@ -29,9 +29,30 @@ const yAxisGroup = graph.append('g')
 const line = d3.line()
     .x(function(d){return x(new Date(d.date))})
     .y(function(d){return y(d.distance)});
-
+    
 //line path element
 const path = graph.append('path');
+
+//create dotted line group and append to graph
+const dottedLines = graph.append('g')
+    .attr('class','lines')
+    .style('opacity',0);
+
+//create x dotted line and append to dotted line group
+const xDottedLine = dottedLines.append('line')
+    .attr('stroke','#aaa')
+    .attr('stroke-width',1)
+    .attr('stroke-dasharray',4);
+
+//create y dotted line and append to dotted line group
+const yDottedLine = dottedLines.append('line')
+    .attr('stroke','#aaa')
+    .attr('stroke-width',1)
+    .attr('stroke-dasharray',4);
+
+
+
+
 
 const update = (data)=>{
     data = data.filter(item =>item.activity ==activity);
@@ -70,6 +91,36 @@ const update = (data)=>{
             .attr('cy',d=>y(d.distance))
             .attr('fill','#ccc');
 
+    graph.selectAll('circle')
+        .on('mouseover',(d,i,n)=>{
+            d3.select(n[i])
+                .transition().duration(100)
+                    .attr('r',8)
+                    .attr('fill','#fff');
+
+            xDottedLine
+                .attr('x1',x(new Date(d.date)))
+                .attr('x2',x(new Date(d.date)))
+                .attr('y1',graphHeight)
+                .attr('y2',y(d.distance));
+            
+            yDottedLine
+                .attr('x1',0)
+                .attr('x2',x(new Date(d.date)))
+                .attr('y1',y(d.distance))
+                .attr('y2',y(d.distance));
+
+            dottedLines.style('opacity',1);
+        })
+
+        .on('mouseleave',(d,i,n)=>{
+            d3.select(n[i])
+            .transition().duration(100)
+                .attr('r',4)
+                .attr('fill','#ccc');
+
+            dottedLines.style('opacity',0);   
+        })
     //create axes
     const xAxis = d3.axisBottom(x)
         .ticks(4)
